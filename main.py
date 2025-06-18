@@ -5,7 +5,6 @@ import os
 import time
 import importlib
 from gtts import gTTS
-from pydub import AudioSegment
 from openai import OpenAI
 
 # 初始化 OpenAI client
@@ -41,13 +40,13 @@ def mask_word(sentence, word):
     pattern = re.compile(re.escape(word), re.IGNORECASE)
     return pattern.sub(word[0] + "_" * (len(word)-2) + word[-1], sentence)
 
-def play_pronunciation(text, mp3="pronunciation.mp3", wav="pronunciation.wav"):
-    tts = gTTS(text=text, lang='fr')
+def play_pronunciation(text, mp3="pronunciation.mp3"):
+    """Generate and play pronunciation audio in MP3 format."""
+    tts = gTTS(text=text, lang="fr")
     tts.save(mp3)
-    AudioSegment.from_mp3(mp3).export(wav, format="wav")
-    if os.path.exists(wav):
-        with open(wav, "rb") as f:
-            st.audio(f, format="audio/wav")
+    if os.path.exists(mp3):
+        with open(mp3, "rb") as f:
+            st.audio(f.read(), format="audio/mp3")
 
 def clean_text(t):
     t = t.replace('’', "'").replace('‘', "'")
